@@ -1,0 +1,25 @@
+# Go specific
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/vendor/
+/bin/
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment specific
+.env
+.env.local
+.env.*
+
+# OS specific
+.DS_Store
+Thumbs.db
