@@ -1,8 +1,30 @@
 package cases
 
-import "time"
+import (
+    "time"
+    "fmt"
+)
 
 // Case represents a case in the system
+type Status string
+type Priority string
+type ResolverStatus string
+
+const (
+    StatusOpen    Status = "OPEN"
+    StatusClosed  Status = "CLOSED"
+    StatusOnHold  Status = "ON_HOLD"
+
+    PriorityUrgent Priority = "URGENT"
+    PriorityHigh   Priority = "HIGH"
+    PriorityMedium Priority = "MEDIUM"
+    PriorityLow    Priority = "LOW"
+
+    ResolverStatusNotStarted ResolverStatus = "NOT_STARTED"
+    ResolverStatusInProgress ResolverStatus = "IN_PROGRESS"
+    ResolverStatusDone       ResolverStatus = "DONE"
+)
+
 type Case struct {
     ID             string         `json:"id"`
     CaseNumber     string         `json:"caseNumber"`

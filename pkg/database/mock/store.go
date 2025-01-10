@@ -42,6 +42,29 @@ func (s *Store) GetCaseByID(id string) (*cases.Case, error) {
 func (s *Store) CreateCase(c cases.Case) (*cases.Case, error) {
     s.mu.Lock()
     defer s.mu.Unlock()
+
+    // Generate case ID and number
+    nextID := len(s.cases) + 1
+    c.ID = fmt.Sprintf("CASE-%03d", nextID)
+    c.CaseNumber = fmt.Sprintf("CMS-2024-%03d", nextID)
+
+    // Set default values if not provided
+    if c.Status == "" {
+        c.Status = cases.StatusOpen
+    }
+    if c.ResolverStatus == "" {
+        c.ResolverStatus = cases.ResolverStatusNotStarted
+    }
+    if c.AssignedTo == "" {
+        c.AssignedTo = "" // Unassigned by default
+    }
+
+    // Validate required fields
+    if c.SubCategory == "" || c.Subject == "" || c.Description == "" {
+        return nil, errors.New("missing required fields")
+    }
+
+    // Add to cases list
     s.cases = append(s.cases, c)
     return &c, nil
 }
