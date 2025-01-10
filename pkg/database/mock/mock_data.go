@@ -59,5 +59,5 @@ func InitialCases() []cases.Case {
             CreatedAt:   time.Now().Add(-72 * time.Hour),
             UpdatedAt:   time.Now().Add(-48 * time.Hour),
         },
-    ]
+    }
 }

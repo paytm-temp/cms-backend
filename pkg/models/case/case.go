@@ -1,6 +1,8 @@
 package cases
 
-import "time"
+import (
+    "time"
+)
 
 // Case represents a case in the system
 type Case struct {

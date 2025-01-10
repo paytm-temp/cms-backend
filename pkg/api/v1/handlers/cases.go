@@ -85,7 +85,42 @@ func (h *CaseHandler) GetStats(c *gin.Context) {
     c.JSON(http.StatusOK, gin.H{"stats": stats})
 }
 
+func (h *CaseHandler) GetCaseByNumber(c *gin.Context) {
+    caseNumber := c.Param("caseNumber")
+    cases, err := h.caseService.GetAllCases()
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+    
+    for _, caseItem := range cases {
+        if caseItem.CaseNumber == caseNumber {
+            c.JSON(http.StatusOK, gin.H{"case": caseItem})
+            return
+        }
+    }
+    c.JSON(http.StatusNotFound, gin.H{"error": "Case not found"})
+}
+
 func RegisterRoutes(r *gin.Engine) {
+    // Add CORS middleware
+    r.Use(func(c *gin.Context) {
+        origin := c.Request.Header.Get("Origin")
+        if origin != "" {
+            c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+            c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+            c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+            c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, X-User-Role")
+        }
+        
+        if c.Request.Method == "OPTIONS" {
+            c.AbortWithStatus(204)
+            return
+        }
+        
+        c.Next()
+    })
+
     handler := NewCaseHandler()
     v1 := r.Group("/api/v1")
     {
@@ -93,6 +128,7 @@ func RegisterRoutes(r *gin.Engine) {
         {
             cases.GET("", handler.GetAllCases)
             cases.GET("/:id", handler.GetCaseByID)
+            cases.GET("/number/:caseNumber", handler.GetCaseByNumber)
             cases.POST("", handler.CreateCase)
             cases.PUT("/:id", handler.UpdateCase)
             cases.DELETE("/:id", handler.DeleteCase)
